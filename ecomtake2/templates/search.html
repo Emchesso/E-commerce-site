@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            {% if results %}
+            <h3>Search results for "<span class="text-info">{{request.GET.keyword}}</span>"</h3>
+            <hr>
+            {% for r in results %}
+            <div class="col-md-6"><!--style="border: 1px solid black"-->
+                <div class="m-6">
+                    <h3>{{r.title}}</h3>
+                    <a href="{% url 'ecomapp:productdetail' r.slug %}">
+                        <img src="{{r.image.url}}" alt="" width="200px" class="image-fluid" style="height:2500; object-fit: cover;">
+                    </a>
+                    <p class="mt-3"><!--MSRP: $<strike>{{marked_price}}</strike> -->${{r.selling_price|floatformat:2|intcomma}}</p>
+                    <a href="{% url 'ecomapp:addtocart' r.id %}" class="btn btn-outline-info"><b>Add to Cart</b></a>
+                    <hr>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <h3>No results found for "<span class="text-info">{{request.GET.keyword}}</span>"</h3>
+            <hr>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

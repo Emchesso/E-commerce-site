@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %} {{product.title}} {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <img src="{{product.image.url}}" alt="" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+            <h3>{{product.title}}</h3><hr>
+            <h4 color="red"><b>${{product.selling_price|floatformat:2|intcomma}}</b></h4>
+            <h5><strike>${{product.marked_price|floatformat:2|intcomma}}</strike></h5>
+            <a href="{% url 'ecomapp:addtocart' product.id %}" class="btn btn-outline-info"><b>Add to Cart</b></a>
+            <hr>
+            <p align="justify">{{product.description}}</p><!--<p class="text-info"></p? for blue highlight-->
+        </div>
+    </div>
+</div>
+{% endblock %}

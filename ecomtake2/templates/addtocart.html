@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %} All Products {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h3>Product added to cart</h3>
+    <hr>
+</div>
+<div>
+    <div class="row">
+        <div class="col-md-6">
+            <pre></pre>
+            <a href="{% url 'ecomapp:home' %}"class="btn btn-outline-secondary">Continue Shopping</a>
+        </div>
+        <div class="col-md-6">
+            <pre></pre>
+            <a href="{% url 'ecomapp:mycart' %}"class="btn btn-outline-secondary">My Cart</a>
+        </div>
+    </div>
+</div>
+    <!--add a "continue shopping" button and a "view cart" button-->
+{% endblock %}

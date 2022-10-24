@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %} Checkout {% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h3>Cart Contents</h3>
+            <a href="{% url 'ecomapp:mycart' %}" class="btn btn-outline-secondary">My Cart</a>
+            <table class="table">
+                <div class="col-md-8">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Rate</th>
+                        <th>Quantity</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cp in cart.cartproduct_set.all %}
+                    <div class="row">
+                        <tr>
+                            <td style="vertical-align:middle">
+                                <a href="{% url 'ecomapp:productdetail' cp.product.slug %}">
+                                    <img src="{{cp.product.image.url}}" alt="" width="75px" class="image-thumbnail">
+                                </a><b>{{cp.product.title}}</b>
+                            </td>
+                            <td style="vertical-align:middle">${{cp.rate}}</td>
+                            <td style="vertical-align:middle">{{cp.quantity}}</td>
+                            <td style="vertical-align:middle">${{cp.subtotal|floatformat:2}}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <th colspan = "3" style="text-align:right">Subtotal</th>
+                            <th>${{cart.total|floatformat:2}}</th>
+                        </tr>
+                    </div>
+                </tbody>
+                </div>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <h3>Checkout Form</h3>
+            <form action="" method = "POST">
+                {% csrf_token %}
+                {{form.as_p}}
+                <!-- not used <a href=""class="btn btn-outline-info"><b>Place Order</b></a> -->
+                <!-- <button class="btn btn-info"><b>Place Order</b></button> -->
+                
+                <div class="box-element hidden" id="payment-info">
+                    <small>Paypal Options</small>
+                    <div id="paypal-button-container"></div>
+                </div>
+                <script src="https://www.paypal.com/sdk/js?client-id=Aeg2A63v6LpSFGYNL-k6VCnZ26QU5Q1DpjHwrzWtQWgHh6ubOoR5E7PuVo9Hhq0xVhPqc8b0dq2HeD8A&currency=USD&disable-funding=credit">//&disable-funding=credit to disable a certain button</script> 
+                <script>
+                    var total = '{{order.cart.total}}'
+                    // Render the PayPal button into #paypal-button-container
+                    paypal.Buttons({
+                        style:{
+                            color: 'blue',
+                            shape: 'pill',
+                        },
+                        // Set up the transaction
+                        createOrder: function(data, actions) {
+                            return actions.order.create({
+                                purchase_units: [{
+                                    amount: {
+                                        value: parseFloat(total).toFixed(2)
+                                    }
+                                }]
+                            });
+                        },
+                        // Finalize the transaction
+                        onApprove: function(data, actions) {
+                            return actions.order.capture().then(function(orderData) {
+                                submitFormData()
+                                // Successful capture! For demo purposes:
+                                console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
+                                var transaction = orderData.purchase_units[0].payments.captures[0];
+                                
+                                // default alert when transaction complete
+                                // alert('Transaction '+ transaction.status + ': ' + transaction.id + '\n\nSee console for all available details');
+
+                                // Replace the above to show a success message within this page, e.g.
+                                // const element = document.getElementById('paypal-button-container');
+                                // element.innerHTML = '';
+                                // element.innerHTML = '<h3>Thank you for your payment!</h3>';
+                                // Or go to another URL:  actions.redirect('thank_you.html');
+                            });
+                        }
+                    }).render('#paypal-button-container');
+                </script>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

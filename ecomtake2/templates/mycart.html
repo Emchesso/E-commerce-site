@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %} My Cart {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h4>Cart Contents</h4><hr>
+    {% if cart.cartproduct_set.all %}
+    <table class="table">
+        <div class="col-md-8">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Rate</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cp in cart.cartproduct_set.all %}
+            <div class="row">
+                <tr>
+                    <td style="vertical-align:middle">
+                        <a href="{% url 'ecomapp:productdetail' cp.product.slug %}">
+                            <img src="{{cp.product.image.url}}" alt="" width="75px" class="image-thumbnail">
+                        </a><b>{{cp.product.title}}</b>
+                    </td>
+                    <td style="vertical-align:middle">${{cp.rate|floatformat:2|intcomma}}</td>
+                    <td style="vertical-align:middle">{{cp.quantity}}   
+                        <a href="{% url 'ecomapp:managecart' cp.id %}?action=increase" class="btn btn-outline-secondary btn-sm"> ⮝ </a>
+                        <a href="{% url 'ecomapp:managecart' cp.id %}?action=decrease" class="btn btn-outline-secondary btn-sm"> ⮟ </a>
+                    </td>
+                    <td style="vertical-align:middle">${{cp.subtotal|floatformat:2|intcomma}}</td>
+                    <td style="vertical-align:middle">
+                        <a href="{% url 'ecomapp:managecart' cp.id %}?action=remove" class="btn btn-outline-secondary"><b>Remove</b></a>
+                    </td>
+                </tr>
+                {% endfor %}
+                <tr>
+                    <th colspan = "3" style="text-align:right">Subtotal</th>
+                    <th>${{cart.total|floatformat:2|intcomma}}</th>
+                    <th>
+                        <a href="{% url 'ecomapp:emptycart' %}"class="btn btn-outline-secondary">
+                            Empty Cart
+                        </a>
+                    </th>
+                </tr>
+            </div>
+        </tbody>
+        </div>
+    </table>
+    <tr>
+        <th>
+            <a href="{% url 'ecomapp:checkout' %}"class="btn btn-outline-info btn-lg btn-block">
+                <b>Checkout</b>
+            </a>
+        </th>
+    </tr>
+    {% endif %}
+    {% if not cart.cartproduct_set.all %}
+    <div>
+        <h4>No Items in Cart</h4>
+        <pre></pre>
+        <a href="{% url 'ecomapp:home' %}"class="btn btn-outline-secondary">Continue Shopping</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
