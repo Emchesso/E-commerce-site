@@ -1,5 +1,5 @@
-# COMP710projects
-E-commerce design project using Django and the Agile development process.
+# Django e-commerce site
+E-commerce full-stack project using Django and the Agile development process.
 
 Ecommerce- First iteration of the project following this guide https://codewithsteps.herokuapp.com/.  Coding of the website mainly uses Django with Python, using SQLite for the store database and some CSS and JS elements for styles.  Abandoned in favor of a more in depth tutorial for the final project
 
